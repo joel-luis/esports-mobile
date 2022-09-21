@@ -1,7 +1,18 @@
 import { SafeAreaView } from 'react-native'
+import { useRoute } from '@react-navigation/native'
+import { GameParams } from '../../@types/navigation'
 
+import { Background } from '../../components/Background'
 import { styles } from './styles'
 
 export function Game() {
-  return <SafeAreaView style={styles.container}></SafeAreaView>
+  const route = useRoute()
+  const game = route.params as GameParams
+  console.log(game, 'game')
+
+  return (
+    <Background>
+      <SafeAreaView style={styles.container}></SafeAreaView>
+    </Background>
+  )
 }
