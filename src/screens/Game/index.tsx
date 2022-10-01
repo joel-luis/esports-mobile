@@ -16,6 +16,7 @@ import logoImg from '../../assets/logo-nlw-esports.png'
 import { Background } from '../../components/Background'
 import { Heading } from '../../components/Heading'
 import { DuoCard } from '../../components/DuoCard'
+import { DuoMatch } from '../../components/DuoMatch'
 import { Entypo } from '@expo/vector-icons'
 
 import { styles } from './styles'
@@ -23,13 +24,20 @@ import { THEME } from '../../theme'
 
 export function Game() {
   const [duos, setDuos] = useState<DuoCardProps[]>([])
+  const [discordDuoSelected, setDiscordDuoSelected] = useState('2')
 
   const navigation = useNavigation()
   const route = useRoute()
   const game = route.params as GameParams
 
+  async function getDiscordUser(adsId: string) {
+    await fetch(`http://172.18.0.1:3333/ads/${adsId}/discord`)
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+  }
+
   useEffect(() => {
-    fetch(`http://172.19.0.1:3333/games/${game.id}/ads`)
+    fetch(`http://172.18.0.1:3333/games/${game.id}/ads`)
       .then((response) => response.json())
       .then((data) => setDuos(data))
   }, [])
@@ -62,7 +70,7 @@ export function Game() {
           data={duos}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <DuoCard data={item} onConnect={() => console.log('connected')} />
+            <DuoCard data={item} onConnect={() => getDiscordUser(item.id)} />
           )}
           horizontal
           style={styles.containerList}
@@ -75,6 +83,11 @@ export function Game() {
               Não há anúncios publicados para esse game.
             </Text>
           )}
+        />
+        <DuoMatch
+          visible={discordDuoSelected.length > 0}
+          discord="joel-luis#0000"
+          onColse={() => setDiscordDuoSelected('')}
         />
       </SafeAreaView>
     </Background>
