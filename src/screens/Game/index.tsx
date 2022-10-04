@@ -24,20 +24,20 @@ import { THEME } from '../../theme'
 
 export function Game() {
   const [duos, setDuos] = useState<DuoCardProps[]>([])
-  const [discordDuoSelected, setDiscordDuoSelected] = useState('2')
+  const [discordDuoSelected, setDiscordDuoSelected] = useState('')
 
   const navigation = useNavigation()
   const route = useRoute()
   const game = route.params as GameParams
 
   async function getDiscordUser(adsId: string) {
-    await fetch(`http://172.18.0.1:3333/ads/${adsId}/discord`)
+    await fetch(`http://172.19.0.1:3333/ads/${adsId}/discord`)
       .then((response) => response.json())
-      .then((data) => console.log(data))
+      .then((data) => setDiscordDuoSelected(data.discord))
   }
 
   useEffect(() => {
-    fetch(`http://172.18.0.1:3333/games/${game.id}/ads`)
+    fetch(`http://172.19.0.1:3333/games/${game.id}/ads`)
       .then((response) => response.json())
       .then((data) => setDuos(data))
   }, [])
@@ -86,8 +86,8 @@ export function Game() {
         />
         <DuoMatch
           visible={discordDuoSelected.length > 0}
-          discord="joel-luis#0000"
-          onColse={() => setDiscordDuoSelected('')}
+          discord={discordDuoSelected}
+          onClose={() => setDiscordDuoSelected('')}
         />
       </SafeAreaView>
     </Background>
